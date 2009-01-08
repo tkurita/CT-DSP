@@ -1,0 +1,60 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir="D:\CT-DSP\trial projects\trial12\"
+ProjectType=Executable
+CPUFamily=TMS320C67XX
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="DspBiosBuilder"
+Tool="Linker"
+Config="Debug"
+Config="hex"
+Config="Release"
+
+[Source Files]
+Source="C:\sBOX\lib\sboxdev.LIB"
+Source="DO_controller.c"
+Source="leak_field.c"
+Source="main.c"
+Source="C:\sBOX\lib\iramboot.cmd"
+
+["Compiler" Settings: "Debug"]
+Options=-g -q -fr"D:\CT-DSP\trial projects\trial12\Debug" -i"C:\sBox\h" -d"_DEBUG" -mv6700
+
+["Compiler" Settings: "hex"]
+Options=-q -o2 -eo.o67 -fr"D:\CT-DSP\trial projects\trial12\hex" -i"C:\sBOX\h" -mv6710
+
+["Compiler" Settings: "Release"]
+Options=-q -o3 -fr"D:\CT-DSP\trial projects\trial12\Release" -mv6700
+
+["DspBiosBuilder" Settings: "Debug"]
+Options=-v6x
+
+["DspBiosBuilder" Settings: "hex"]
+Options=-v6x
+
+["DspBiosBuilder" Settings: "Release"]
+Options=-v6x
+
+["Linker" Settings: "Debug"]
+Options=-q -m".\Debug\trial12.map" -o".\Debug\trial12.out" -x
+
+["Linker" Settings: "hex"]
+Options=-q -m".\hex\trial8.map" -o".\hex\trial8.out" -x
+
+["Linker" Settings: "Release"]
+Options=-q -c -m".\Release\trial12.map" -o".\Release\trial12.out" -x
+
+["C:\sBOX\lib\sboxdev.LIB" Settings: "Debug"]
+LinkOrder=2
+
+["C:\sBOX\lib\iramboot.cmd" Settings: "Debug"]
+LinkOrder=1
+
+["C:\sBOX\lib\iramboot.cmd" Settings: "hex"]
+LinkOrder=1
+
+["C:\sBOX\lib\iramboot.cmd" Settings: "Release"]
+LinkOrder=1
+

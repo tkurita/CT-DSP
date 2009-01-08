@@ -1,0 +1,18 @@
+------------------------------  trial8.pjt - hex  ------------------------------
+[DO_controller.c] "c:\ti\c6000\cgtools\bin\cl6x" -q -o2 -eo.o67 -fr"D:/CT DSP/trial8/hex" -i"C:/sBOX/h" -mv6710 -@"hex.lkf" "DO_controller.c"
+
+[leak_field.c] "c:\ti\c6000\cgtools\bin\cl6x" -q -o2 -eo.o67 -fr"D:/CT DSP/trial8/hex" -i"C:/sBOX/h" -mv6710 -@"hex.lkf" "leak_field.c"
+"leak_field.c", line 5: warning: extra text after expected end of preprocessing directive
+"leak_field.c", line 17: warning: variable "fp" was declared but never referenced
+"leak_field.c", line 18: warning: variable "x" was declared but never referenced
+
+[main.c] "c:\ti\c6000\cgtools\bin\cl6x" -q -o2 -eo.o67 -fr"D:/CT DSP/trial8/hex" -i"C:/sBOX/h" -mv6710 -@"hex.lkf" "main.c"
+"main.c", line 36: warning: variable "current_filterd" was declared but never referenced
+"main.c", line 37: warning: variable "particles" was set but never used
+"main.c", line 17: warning: variable "lpr_queue" was declared but never referenced
+"main.c", line 18: warning: variable "bsf_queue" was declared but never referenced
+
+[Linking...] "c:\ti\c6000\cgtools\bin\cl6x" -@"hex.lkf"
+
+Build Complete,
+  0 Errors, 7 Warnings, 0 Remarks.

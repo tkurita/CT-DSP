@@ -1,0 +1,7 @@
+-z -q -m"./hex/trial8.map" -o"./hex/trial8.out" -x -i"c:/ti/c6000/bios/lib" -i"c:/ti/C6000/dsk6713/lib" -i"c:/ti/c6000/rtdx/lib" -i"c:/ti/c6000/cgtools/lib"
+"D:\CT DSP\trial8\hex\degital_filter.o67"
+"D:\CT DSP\trial8\hex\DO_controller.o67"
+"D:\CT DSP\trial8\hex\leak_field.o67"
+"D:\CT DSP\trial8\hex\main.o67"
+"C:\sBOX\lib\sboxdevf.LIB"
+"C:\sBOX\lib\flashboot.cmd"

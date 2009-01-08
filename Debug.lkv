@@ -1,0 +1,7 @@
+-z -q -c -m"./Debug/trial6.map" -o"./Debug/trial6.out" -x -i"c:/ti/c6000/bios/lib" -i"c:/ti/C6000/dsk6713/lib" -i"c:/ti/c6000/rtdx/lib" -i"c:/ti/c6000/cgtools/lib"
+"D:\CT DSP\trial8\Debug\degital_filter.obj"
+"D:\CT DSP\trial8\Debug\DO_controller.obj"
+"D:\CT DSP\trial8\Debug\leak_field.obj"
+"D:\CT DSP\trial8\Debug\main.obj"
+"C:\sBOX\lib\sboxdevf.LIB"
+"C:\sBOX\lib\flashboot.cmd"

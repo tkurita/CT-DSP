@@ -1,0 +1,11 @@
+----------------------------  trial8.pjt - Release  ----------------------------
+[main.c] "c:\ti\c6000\cgtools\bin\cl6x" -q -o3 -fr"D:/CT DSP/trial8/Release" -mv6700 -@"Release.lkf" "main.c"
+"main.c", line 36: warning: variable "current_filterd" was declared but never referenced
+"main.c", line 37: warning: variable "particles" was set but never used
+"main.c", line 17: warning: variable "lpr_queue" was declared but never referenced
+"main.c", line 18: warning: variable "bsf_queue" was declared but never referenced
+
+[Linking...] "c:\ti\c6000\cgtools\bin\cl6x" -@"Release.lkf"
+
+Build Complete,
+  0 Errors, 4 Warnings, 0 Remarks.
