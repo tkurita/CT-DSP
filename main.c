@@ -2,6 +2,7 @@
 //static far volatile int data[MAX_N_AD]; //magnetic field signal. subtracted from current signal
 #include "leak_field.h"
 #include "DO_controller.h"
+#include "setting_loader.h"
 
 /*define global variables*/
 
@@ -40,7 +41,7 @@ interrupt void c_int_ad_done()
 {
 	int freq_in, curr_in, buffed_freq_in, buffed_curr_in;
 	int cancel_data;
-	double current, current_filterd;
+	double current;
 	double particles, curr_f;
 	double slopedoffset;
 
@@ -181,7 +182,8 @@ void check_di()
 -------------------------------------------------------*/
 void main()
 {		
-	fprintf( stdout, "start tria11\n");
+	load_settings();
+	fprintf( stdout, "start CT-DSP\n");
 	fflush( stdout );
 
 	/* system initialize */

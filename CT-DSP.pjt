@@ -17,6 +17,7 @@ Source="C:\sBOX\lib\sboxdev.LIB"
 Source="DO_controller.c"
 Source="leak_field.c"
 Source="main.c"
+Source="setting_loader.c"
 Source="C:\sBOX\lib\iramboot.cmd"
 
 ["Compiler" Settings: "Debug"]
