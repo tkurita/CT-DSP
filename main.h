@@ -15,11 +15,9 @@
 #define CURR_DELAY_DA_CH 4 //delayed (linear pedestal cancel) current out
 #define PARTC_DELAY_DA_CH 5 //delayed (linear pedestal cancel) particle number out
 
-/*
 #define SAMPLE_FREQ 5000.0 //[Hz] sampling frequency of ADDA
 #define WORKTIME 1.9
 #define MAX_N_AD 9500 // must be SAMPLE_FREQ*WORKTIME
-*/
 
 /* customize behaivor */
 #define USE_FIELD_CANCEL 1

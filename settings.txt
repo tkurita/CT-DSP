@@ -1,5 +1,3 @@
-5000     # sampling frequency [Hz]
-1.9      # working time [sec]
 1        # current out factor
 12045.5  # charge out factor 10000*1.20455 for 0.022 [nC/V]
 1        # harmonics

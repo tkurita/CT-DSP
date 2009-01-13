@@ -1,1 +1,7 @@
--i"C:/CCStudio_v3.1/C6000/rtdx/include" -i"C:/CCStudio_v3.1/C6000/csl/include" -i"C:/CCStudio_v3.1/C6000/xdais/include" -i"C:/CCStudio_v3.1/c6000/bios/include" -i"C:/CCStudio_v3.1/C6000/cgtools/include"
+-z -q -m"./Debug/CT-DSP.map" -o"./Debug/CT-DSP.out" -x -i"C:/CCStudio_v3.1/C6000/rtdx/lib" -i"C:/CCStudio_v3.1/C6000/csl/lib" -i"C:/CCStudio_v3.1/C6000/xdais/lib" -i"C:/CCStudio_v3.1/C6000/bios/lib" -i"C:/CCStudio_v3.1/C6000/cgtools/lib"
+"C:\sBOX\lib\iramboot.cmd"
+"C:\sBOX\lib\sboxdev.LIB"
+"D:\CT-DSP\trunk\Debug\DO_controller.obj"
+"D:\CT-DSP\trunk\Debug\leak_field.obj"
+"D:\CT-DSP\trunk\Debug\main.obj"
+"D:\CT-DSP\trunk\Debug\setting_loader.obj"
