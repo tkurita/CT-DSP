@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "setting_loader.h"
+#include "main.h"
 
 #define BUFFSIZE 1024
 
@@ -10,7 +11,8 @@ unsigned int HARMONICS;
 double T1;
 double T2;
 unsigned int AVERAGE_FLAG;
-
+unsigned int N1;
+unsigned int N2;
 
 void show_settings()
 {
@@ -28,7 +30,7 @@ void load_settings()
 	FILE *in;
 	in = fopen(settingsfile, "r");
 	if (!in) {
-		fprintf(stderr, "Can't open %s", settingsfile);
+		fprintf(stderr, "Can't open %s\n", settingsfile);
 		exit(1);
 	}
 	fgets(buff, BUFFSIZE, in);
@@ -45,5 +47,7 @@ void load_settings()
 	AVERAGE_FLAG = atoi(buff);
 
 	fclose(in);
-	show_settings();
+	N1 = T1*SAMPLE_FREQ/1000;
+	N2 = T2*SAMPLE_FREQ/1000;
+	//show_settings();
 }

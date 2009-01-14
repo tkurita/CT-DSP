@@ -37,6 +37,46 @@ void update_trigger_led()
 
 }
 
+void update_slopeoffset()
+{
+	int stored_data_origin, stored_data_end;
+	stored_data_origin = stored_data_at(OFFSET_RESET_DELAY);
+	stored_data_end = stored_data_at(MAX_N_AD-1);
+
+	OffsetSlope = ((float)(curr_in_buff[MAX_N_AD-1]
+							-stored_data_end-curr_in_buff[OFFSET_RESET_DELAY]+stored_data_origin))
+					/((float)(MAX_N_AD-OFFSET_RESET_DELAY-1));
+					
+	Offset0 = (float)(curr_in_buff[OFFSET_RESET_DELAY]-stored_data_origin)
+				-OffsetSlope*OFFSET_RESET_DELAY;
+}
+
+
+
+void output_data()
+{
+	double slopedoffset, current, particles;
+	int cancel_data;
+	FILE *out;
+	update_slopeoffset();
+	cancel_data = stored_data_at(N1);
+	slopedoffset = Offset0+OffsetSlope*(double)N1;
+	current = (double)curr_in_buff[N1]- cancel_data - slopedoffset;
+	particles = current/(double)freq_in_buff[N1];
+	out = fopen("dspout.txt", "w");
+	fprintf(out, "%f\n", current);
+	fprintf(out, "%f\n", particles);
+
+	cancel_data = stored_data_at(N2);
+	slopedoffset = Offset0+OffsetSlope*(double)N2;
+	current = (double)curr_in_buff[N2]- cancel_data - slopedoffset;
+	particles = current/(double)freq_in_buff[N2];
+	fprintf(out, "%f\n", current);
+	fprintf(out, "%f\n", particles);
+
+	fclose(out);
+}
+
 interrupt void c_int_ad_done()
 {
 	int freq_in, curr_in, buffed_freq_in, buffed_curr_in;
@@ -77,7 +117,20 @@ interrupt void c_int_ad_done()
 		buffed_freq_in = freq_in_buff[N_AD];
 		curr_in_buff[N_AD] = curr_in;
 		freq_in_buff[N_AD] = freq_in;
-	} else {
+	} else if (N_AD == MAX_N_AD) {
+		//sbox_IntUnSet(EINT5);
+		buffed_curr_in = curr_in;
+		buffed_freq_in = freq_in;
+	/*} else if (N_AD == MAX_N_AD) {
+		sbox_IntUnSet(EEINT5);
+		sbox_DaPut(CURR_DELAY_DA_CH, 32767);
+		load_settings();
+		output_data();
+		buffed_curr_in = curr_in;
+		buffed_freq_in = freq_in;
+		sbox_DaPut(CURR_DELAY_DA_CH, 0);
+		return;*/
+	} else {		
 		buffed_curr_in = curr_in;
 		buffed_freq_in = freq_in;
 	}
@@ -98,7 +151,6 @@ intterupt functoin for trigger in running
 --------------------------*/
 interrupt void c_int_triggered()
 {
-	int stored_data_origin, stored_data_end;
 	DO_on_for_ch(0);
 	//puts("triggered.");
 	N_AD = 0;
@@ -119,7 +171,7 @@ interrupt void c_int_triggered()
 		if (ShouldClearData || (triggered_to_store())) {
 			sbox_IntUnSet(EINT5);
 			if( sbox_IntSet( AD_DONE, EINT5, c_int_ad_done ) != SBOX_OK ) {
-				puts("[sbox_IntSet] error for c_int_ad_done_to_store\n");
+				puts("[sbox_IntSet] error for c_int_ad_done\n");
 				exit( -1 );
 			}
 
@@ -131,21 +183,12 @@ interrupt void c_int_triggered()
 			
 			InStoreMode = 0;
 		}
-	} else {
-		stored_data_origin = stored_data_at(OFFSET_RESET_DELAY);
-		stored_data_end = stored_data_at(MAX_N_AD-1);
-
-		OffsetSlope = ((float)(curr_in_buff[MAX_N_AD-1]
-							-stored_data_end-curr_in_buff[OFFSET_RESET_DELAY]+stored_data_origin))
-					/((float)(MAX_N_AD-OFFSET_RESET_DELAY-1));
-					
-		Offset0 = (float)(curr_in_buff[OFFSET_RESET_DELAY]-stored_data_origin)
-				-OffsetSlope*OFFSET_RESET_DELAY;
-	}
-} 
+	} 
+}
 
 /* ----------------------- 
-intterupt functoin for initial trigger 
+intterupt functoin for initial trigger
+this function is called by EINT4. EINT4 will be remapped to c_int_triggered. 
 --------------------------*/
 interrupt void c_int_start_ad_da()
 {
@@ -225,8 +268,24 @@ void main()
 	while(1) {
 		if ((!ShouldStoreData) && (!ShouldClearData)) {
 			check_di();
-		}	
+			if (N_AD == MAX_N_AD) {
+				//sbox_IntUnSet(EINT5);
+				//int_vect_disable(EINT5);
+				//puts("start file access");
+			    sbox_DaPut(CURR_DELAY_DA_CH, 32767);
+				load_settings();
+				output_data();
+				sbox_DaPut(CURR_DELAY_DA_CH, 0);
+				N_AD++;
+				//int_vect_enable(EINT5, c_int_ad_done);
+				/*
+				if( sbox_IntSet( AD_DONE, EINT5, c_int_ad_done ) != SBOX_OK ) {
+					puts("[sbox_IntSet] error for c_int_ad_done in main\n");
+					exit( -1 );
+				}
+				*/
+				//puts("end file access");
+			}
+		}
 	}
 }
-
-
