@@ -272,11 +272,13 @@ void main()
 				//sbox_IntUnSet(EINT5);
 				//int_vect_disable(EINT5);
 				//puts("start file access");
+				//clock_stop(TIMER_0);
 			    sbox_DaPut(CURR_DELAY_DA_CH, 32767);
 				load_settings();
-				output_data();
+				//output_data();
 				sbox_DaPut(CURR_DELAY_DA_CH, 0);
 				N_AD++;
+				//clock_start(TIMER_0);
 				//int_vect_enable(EINT5, c_int_ad_done);
 				/*
 				if( sbox_IntSet( AD_DONE, EINT5, c_int_ad_done ) != SBOX_OK ) {
