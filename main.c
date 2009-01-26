@@ -3,6 +3,7 @@
 #include "leak_field.h"
 #include "DO_controller.h"
 #include "setting_loader.h"
+#include "average_controller.h"
 
 /*define global variables*/
 
@@ -12,6 +13,10 @@ static volatile int ShouldStoreData; //when button is pushed, this flag raise
 static volatile int InStoreMode;
 static volatile int ShouldClearData;
 
+static int NextTask;
+static volatile int AverageStatus;
+static volatile int StoreStatus;
+
 static volatile double CurrOffset; //offset, obtained when first ad_get after triggered
 
 static far volatile int curr_in_buff[MAX_N_AD];
@@ -20,19 +25,15 @@ static far volatile int freq_in_buff[MAX_N_AD];
 static volatile double Offset0 = 0;
 static volatile double OffsetSlope = 0;
 
-//volatile struct fir_queue lpr_queue;
-//static struct fir_queue lpr_queue;
-//static struct fir_queue bsf_queue;
-
 
 /*-------------------------------------------------------
 		interrupt function (Trigger)
 -------------------------------------------------------*/
 void update_trigger_led()
 {
-	//printf("N_AD %d\n", N_AD);
+	//puts("update_trigger_led");
 	if (N_AD == 20) {
-		DO_off_for_ch(0);;
+		DO_off_for_ch(do_trigger);
 	}
 
 }
@@ -44,7 +45,8 @@ void update_slopeoffset()
 	stored_data_end = stored_data_at(MAX_N_AD-1);
 
 	OffsetSlope = ((float)(curr_in_buff[MAX_N_AD-1]
-							-stored_data_end-curr_in_buff[OFFSET_RESET_DELAY]+stored_data_origin))
+							-stored_data_end-curr_in_buff[OFFSET_RESET_DELAY]
+						   +stored_data_origin))
 					/((float)(MAX_N_AD-OFFSET_RESET_DELAY-1));
 					
 	Offset0 = (float)(curr_in_buff[OFFSET_RESET_DELAY]-stored_data_origin)
@@ -77,6 +79,28 @@ void output_data()
 	fclose(out);
 }
 
+void process_avg()
+{
+	double slopedoffset, current, particles;
+	int cancel_data;
+	update_slopeoffset();
+	cancel_data = stored_data_at(N1);
+	slopedoffset = Offset0+OffsetSlope*(double)N1;
+	current = (double)curr_in_buff[N1]- cancel_data - slopedoffset;
+	particles = current/(double)freq_in_buff[N1];
+	avg_add(0, current);
+	avg_add(1, particles);
+
+	cancel_data = stored_data_at(N2);
+	slopedoffset = Offset0+OffsetSlope*(double)N2;
+	current = (double)curr_in_buff[N2]- cancel_data - slopedoffset;
+	particles = current/(double)freq_in_buff[N2];
+	avg_add(2, current);
+	if (avg_add(3, particles) == full) {
+		AverageStatus = end_avg;
+	}
+}
+
 interrupt void c_int_ad_done()
 {
 	int freq_in, curr_in, buffed_freq_in, buffed_curr_in;
@@ -93,15 +117,11 @@ interrupt void c_int_ad_done()
  	
 	/* process for real time output*/
  	curr_f = curr_in;
-	//curr_f = apply_fir(&lpr_queue, (double)curr_in);
-	//curr_f = apply_fir(&bsf_queue, curr_f);
-	//curr_f = apply_fir(&bsf_queue, (double)curr_in);
 	if (N_AD == OFFSET_RESET_DELAY) {
 		CurrOffset = curr_f - cancel_data;
 	}
 		
 	current = curr_f - cancel_data - CurrOffset;
-	//current_filterd = apply_fir(&bsf_queue, current);
 	particles = CALIB_RATIO*current/(double)freq_in;
 
 	sbox_DaPut(CURR_DA_CH,(int)current);
@@ -118,13 +138,12 @@ interrupt void c_int_ad_done()
 		curr_in_buff[N_AD] = curr_in;
 		freq_in_buff[N_AD] = freq_in;
 	} else if (N_AD == MAX_N_AD) {
-		//sbox_IntUnSet(EINT5);
+		if (AverageStatus == start_avg) {
+			process_avg();
+		}
 		buffed_curr_in = curr_in;
 		buffed_freq_in = freq_in;
 	/*} else if (N_AD == MAX_N_AD) {
-		sbox_IntUnSet(EEINT5);
-		sbox_DaPut(CURR_DELAY_DA_CH, 32767);
-		load_settings();
 		output_data();
 		buffed_curr_in = curr_in;
 		buffed_freq_in = freq_in;
@@ -151,7 +170,7 @@ intterupt functoin for trigger in running
 --------------------------*/
 interrupt void c_int_triggered()
 {
-	DO_on_for_ch(0);
+	DO_on_for_ch(do_trigger);
 	//puts("triggered.");
 	N_AD = 0;
 
@@ -178,7 +197,7 @@ interrupt void c_int_triggered()
 			if (ShouldClearData) {
 				clear_stored_data();
 				ShouldClearData = 0;
-				DO_off_for_ch(1);
+				DO_off_for_ch(do_recordleakfield);
 			}
 			
 			InStoreMode = 0;
@@ -193,7 +212,7 @@ this function is called by EINT4. EINT4 will be remapped to c_int_triggered.
 interrupt void c_int_start_ad_da()
 {
 	//puts("will start ad_da");
-	DO_on_for_ch(0);
+	DO_on_for_ch(do_trigger);
 	sbox_IntUnSet(EINT4);
 	if( sbox_IntSet( OUT_TRG, EINT4, c_int_triggered ) != SBOX_OK ) {
 		puts("[sbox_IntSet] error for c_int_triggered\n");
@@ -213,10 +232,19 @@ void check_di()
 {
 	int di_in;
 	di_in = sbox_DiGet() & 0xFF;
+	//puts("start check_di");
+	if (di_in) printf("di_in %d\n", di_in);
+
 	if (InStoreMode) {
-		ShouldClearData = di_in&0x01;
+		ShouldClearData = di_in & di_recordleakfield;
 	} else {
-		ShouldStoreData = di_in&0x01;
+		if (NextTask = di_in & di_readsetting){}
+		else if (NextTask = di_in & di_recordleakfield){}
+		else if (NextTask = di_in & di_average){}
+		if (NextTask) {
+			//printf("NextTask %d\n", NextTask);
+			DO_on_with_bits(NextTask);
+		}
 	}
 }
 
@@ -231,6 +259,12 @@ void main()
 
 	/* system initialize */
 	sbox_Init();
+
+	ShouldStoreData = 0;
+	InStoreMode = 0;
+	ShouldClearData = 0;
+	NextTask = -1;
+	AverageStatus = none;
 
 	/* clear DO */
 	DO_clear();
@@ -262,17 +296,46 @@ void main()
 		exit( -1 );
 	}
 	
-	ShouldStoreData = 0;
-	InStoreMode = 0;
-	ShouldClearData = 0;
 	while(1) {
-		if ((!ShouldStoreData) && (!ShouldClearData)) {
+		switch (NextTask) {
+			case di_readsetting:
+				if (N_AD == MAX_N_AD) {
+					N_AD++;
+					load_settings();
+					DO_off_for_ch(do_readsetting);
+					NextTask = -1;
+				}
+				break;
+			case di_average:
+				switch (AverageStatus) {
+					case none:
+						avg_initialize(5,10);
+						AverageStatus = start_avg;
+						break;
+					case end_avg:
+						avg_output();
+						DO_off_for_ch(do_average);
+						NextTask = -1;
+						AverageStatus = none;
+						break;
+					default:
+						break;
+				}
+				break;
+			case di_recordleakfield:
+				ShouldStoreData = 1;
+				NextTask = -1;
+				break;
+			default:
+				if ((!ShouldClearData) && (!ShouldStoreData)) {
+					check_di();
+				}
+
+		}
+		/*
+		if ((!ShouldStoreData) && (!ShouldClearData) && (!ShouldAverage)&& (!NextTask)) {
 			check_di();
 			if (N_AD == MAX_N_AD) {
-				//sbox_IntUnSet(EINT5);
-				//int_vect_disable(EINT5);
-				//puts("start file access");
-				//clock_stop(TIMER_0);
 			    sbox_DaPut(CURR_DELAY_DA_CH, 32767);
 				load_settings();
 				//output_data();
@@ -280,14 +343,15 @@ void main()
 				N_AD++;
 				//clock_start(TIMER_0);
 				//int_vect_enable(EINT5, c_int_ad_done);
-				/*
+				
 				if( sbox_IntSet( AD_DONE, EINT5, c_int_ad_done ) != SBOX_OK ) {
 					puts("[sbox_IntSet] error for c_int_ad_done in main\n");
 					exit( -1 );
 				}
-				*/
+				
 				//puts("end file access");
 			}
 		}
+		*/
 	}
 }

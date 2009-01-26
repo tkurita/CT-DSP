@@ -15,6 +15,25 @@
 #define CURR_DELAY_DA_CH 4 //delayed (linear pedestal cancel) current out
 #define PARTC_DELAY_DA_CH 5 //delayed (linear pedestal cancel) particle number out
 
+enum do_channel {
+	do_readsetting = 0,
+	do_recordleakfield = 1,
+	do_average = 2,
+	do_trigger = 3
+};
+
+enum di_channel {
+	di_readsetting = 1,
+	di_recordleakfield = 2,
+	di_average = 4
+};
+
+enum avg_status {
+	none,
+	start_avg,
+	end_avg
+};
+
 #define SAMPLE_FREQ 5000.0 //[Hz] sampling frequency of ADDA
 #define WORKTIME 1.85
 #define MAX_N_AD 9250 // must be SAMPLE_FREQ*WORKTIME

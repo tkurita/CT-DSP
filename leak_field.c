@@ -14,8 +14,11 @@ extern volatile int N_AD;
  
 void read_cancel_data()
 {
+#if FILE_ACCESS
 	FILE *fp;
-	int i,x;
+	int x;
+#endif
+	int i;
 	
 	/* load stored data */
 	for (i=0; i<MAX_N_AD; i++) {
@@ -95,7 +98,7 @@ int triggered_to_store()
 	is_end_store = (CurrentCycle > MAX_CYCLE);
 	if (is_end_store) {
 		output_stored_data();
-		DO_off_for_ch(1);
+		DO_off_for_ch(do_recordleakfield);
 	}
 	
 	return is_end_store;
@@ -105,7 +108,7 @@ void ready_to_store()
 {
 	//puts("ready to store");
 	CurrentCycle = 0;
-	DO_on_for_ch(1);
+	DO_on_for_ch(do_recordleakfield);
 	triggered_to_store();
 }
 

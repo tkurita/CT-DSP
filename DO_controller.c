@@ -11,15 +11,17 @@ void DO_clear()
 	CurrentStatus = 0x00;
 }
 
+void DO_on_with_bits(int target_ch)
+{
+	CurrentStatus = CurrentStatus | target_ch;
+	sbox_DoPut(CurrentStatus);
+}
+
 void DO_on_for_ch(int ch_num)
 {
 	int target_ch;
-	//printf("target ch %d\n",ch_num);
 	target_ch = 0x01<<ch_num;
-	//puts("start DO_on_for_ch\n");
-	CurrentStatus = CurrentStatus | target_ch;
-	//printf("DO Status %X \n", CurrentStatus); 
-	sbox_DoPut(CurrentStatus);	
+	DO_on_with_bits(target_ch);
 }
 
 void DO_keep()

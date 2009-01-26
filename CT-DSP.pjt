@@ -13,6 +13,7 @@ Config="hex"
 Config="Release"
 
 [Source Files]
+Source="average_controller.c"
 Source="C:\sBOX\lib\sboxdev.LIB"
 Source="DO_controller.c"
 Source="leak_field.c"

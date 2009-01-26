@@ -1,3 +1,4 @@
+
 void read_cancel_data();
 interrupt void c_int_ad_done_to_store();
 int triggered_to_store();
