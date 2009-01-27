@@ -34,6 +34,13 @@ enum avg_status {
 	end_avg
 };
 
+enum store_status {
+	end_store,
+	should_store,
+	in_store,
+	should_clear
+};
+
 #define SAMPLE_FREQ 5000.0 //[Hz] sampling frequency of ADDA
 #define WORKTIME 1.85
 #define MAX_N_AD 9250 // must be SAMPLE_FREQ*WORKTIME
@@ -49,10 +56,3 @@ enum avg_status {
 #define CALIB_RATIO_CARBON 100000.0*1.20455*2 //carbon
 #define CALIB_RARIO_CARBON2 100000.0*1.20455*4 // carbon 2008.04.04 current out of front module decrease to the half.
 #define OFFSET_RESET_DELAY 10 //[sample]
-
-
-/*
-int val_before;
-int val_last;
-int last_val;
-*/

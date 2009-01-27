@@ -9,13 +9,14 @@
 
 //static volatile int Triggered; //set to 1 if triggered.
 volatile int N_AD; //incremented with AD_DONE interruput. rest to 0 when OUT_TRIG intterupt
+/*
 static volatile int ShouldStoreData; //when button is pushed, this flag raise
 static volatile int InStoreMode;
 static volatile int ShouldClearData;
-
+*/
 static int NextTask;
-static volatile int AverageStatus;
-static volatile int StoreStatus;
+static volatile enum avg_status AverageStatus;
+static volatile enum store_status StoreStatus;
 
 static volatile double CurrOffset; //offset, obtained when first ad_get after triggered
 
@@ -174,33 +175,31 @@ interrupt void c_int_triggered()
 	//puts("triggered.");
 	N_AD = 0;
 
-	if (ShouldStoreData) {
+	if (StoreStatus == should_store) {
 		sbox_IntUnSet(EINT5);
 		if( sbox_IntSet( AD_DONE, EINT5, c_int_ad_done_to_store ) != SBOX_OK ) {
 			puts("[sbox_IntSet] error for c_int_ad_done_to_store\n");
 			exit( -1 );
 		}
-		ShouldStoreData = 0;
-		InStoreMode = 1;
+		StoreStatus = in_store;
 		ready_to_store();
 	}
 	
-	if (InStoreMode) {
+	if (StoreStatus == in_store) {
 		//puts("store mode");
-		if (ShouldClearData || (triggered_to_store())) {
+		if ((StoreStatus == should_clear) || (triggered_to_store())) {
 			sbox_IntUnSet(EINT5);
 			if( sbox_IntSet( AD_DONE, EINT5, c_int_ad_done ) != SBOX_OK ) {
 				puts("[sbox_IntSet] error for c_int_ad_done\n");
 				exit( -1 );
 			}
 
-			if (ShouldClearData) {
+			if (StoreStatus == should_clear) {
 				clear_stored_data();
-				ShouldClearData = 0;
 				DO_off_for_ch(do_recordleakfield);
 			}
 			
-			InStoreMode = 0;
+			StoreStatus = end_store;
 		}
 	} 
 }
@@ -233,10 +232,10 @@ void check_di()
 	int di_in;
 	di_in = sbox_DiGet() & 0xFF;
 	//puts("start check_di");
-	if (di_in) printf("di_in %d\n", di_in);
+	//if (di_in) printf("di_in %d\n", di_in);
 
-	if (InStoreMode) {
-		ShouldClearData = di_in & di_recordleakfield;
+	if (StoreStatus == in_store) {
+		if (di_in & di_recordleakfield) StoreStatus = should_clear;
 	} else {
 		if (NextTask = di_in & di_readsetting){}
 		else if (NextTask = di_in & di_recordleakfield){}
@@ -260,12 +259,9 @@ void main()
 	/* system initialize */
 	sbox_Init();
 
-	ShouldStoreData = 0;
-	InStoreMode = 0;
-	ShouldClearData = 0;
 	NextTask = -1;
 	AverageStatus = none;
-
+	StoreStatus = end_store;
 	/* clear DO */
 	DO_clear();
 	read_cancel_data();
@@ -287,15 +283,14 @@ void main()
 	clock_set(SAMPLE_FREQ, TIMER_0 );
 	clock_stop(TIMER_0);
 
-
+	//puts("start loop");
 ///////////// Set Trigger Mode ////////////////
 	//setup interrupt
-//	Triggered=0;
 	if( sbox_IntSet( OUT_TRG, EINT4, c_int_start_ad_da ) != SBOX_OK ) {
 		puts("[sbox_IntSet] error \n");
 		exit( -1 );
 	}
-	
+
 	while(1) {
 		switch (NextTask) {
 			case di_readsetting:
@@ -323,35 +318,14 @@ void main()
 				}
 				break;
 			case di_recordleakfield:
-				ShouldStoreData = 1;
+				StoreStatus = should_store;
 				NextTask = -1;
 				break;
 			default:
-				if ((!ShouldClearData) && (!ShouldStoreData)) {
+				if ((StoreStatus == end_store)||(StoreStatus == in_store))  {
 					check_di();
 				}
 
 		}
-		/*
-		if ((!ShouldStoreData) && (!ShouldClearData) && (!ShouldAverage)&& (!NextTask)) {
-			check_di();
-			if (N_AD == MAX_N_AD) {
-			    sbox_DaPut(CURR_DELAY_DA_CH, 32767);
-				load_settings();
-				//output_data();
-				sbox_DaPut(CURR_DELAY_DA_CH, 0);
-				N_AD++;
-				//clock_start(TIMER_0);
-				//int_vect_enable(EINT5, c_int_ad_done);
-				
-				if( sbox_IntSet( AD_DONE, EINT5, c_int_ad_done ) != SBOX_OK ) {
-					puts("[sbox_IntSet] error for c_int_ad_done in main\n");
-					exit( -1 );
-				}
-				
-				//puts("end file access");
-			}
-		}
-		*/
 	}
 }
