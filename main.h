@@ -15,6 +15,9 @@
 #define CURR_DELAY_DA_CH 4 //delayed (linear pedestal cancel) current out
 #define PARTC_DELAY_DA_CH 5 //delayed (linear pedestal cancel) particle number out
 
+/* COUNTER CHANNEL */
+#define BS_CH 0
+
 enum do_channel {
 	do_readsetting = 0,
 	do_recordleakfield = 1,

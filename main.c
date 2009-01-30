@@ -83,7 +83,7 @@ void output_data()
 void process_avg()
 {
 	double slopedoffset, current, particles;
-	int cancel_data;
+	int cancel_data, bscnt;
 	update_slopeoffset();
 	cancel_data = stored_data_at(N1);
 	slopedoffset = Offset0+OffsetSlope*(double)N1;
@@ -100,6 +100,9 @@ void process_avg()
 	if (avg_add(3, particles) == full) {
 		AverageStatus = end_avg;
 	}
+
+	bscnt = sbox_CntGet(BS_CH);
+	avg_add(4, bscnt);
 }
 
 interrupt void c_int_ad_done()
@@ -172,7 +175,7 @@ intterupt functoin for trigger in running
 interrupt void c_int_triggered()
 {
 	DO_on_for_ch(do_trigger);
-	//puts("triggered.");
+	sbox_CntPut(BS_CH, 0 );
 	N_AD = 0;
 
 	if (StoreStatus == should_store) {
@@ -283,7 +286,20 @@ void main()
 	clock_set(SAMPLE_FREQ, TIMER_0 );
 	clock_stop(TIMER_0);
 
-	//puts("start loop");
+	/* Counter setup */
+	if( sbox_CntModeSet(BS_CH, OFF, CNT_MODE_UPDN, CNT_MULT_1 ) != SBOX_OK ) {
+		puts("[sbox_CntModeSet] error");
+		exit( -1 );
+	}
+	sbox_CntPut(BS_CH, 0 );
+	
+	if( sbox_CntTrgSet( TRG_TIMER1) != SBOX_OK ) {
+		printf("[sbox_CntTrgSet] error \n");
+		exit( -1 );
+	}
+
+	clock_set( 1000.0, TIMER_1 );
+
 ///////////// Set Trigger Mode ////////////////
 	//setup interrupt
 	if( sbox_IntSet( OUT_TRG, EINT4, c_int_start_ad_da ) != SBOX_OK ) {
