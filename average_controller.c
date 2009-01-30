@@ -6,7 +6,12 @@ static double **avg_buffer = NULL;
 static int *buffer_ind = NULL;
 static int N_AVG = 0;
 static int N_CYCLE = 0;
-
+static char *avg_comments[5] = {"current at timming 1",
+								"particles at timming 1",
+								"current at timming 2",
+								"particles at timming 2",
+								"BS Counts"};
+	
 int avg_initialize(short n_avg, int n_cycle) {
 	int n = 0;
 	int m = 0;
@@ -62,7 +67,7 @@ void avg_output() {
 	FILE *out;
 	out = fopen("dspout.txt", "w");
 	for (n=0; n < N_AVG; n++) {
-		fprintf(out, "%f\n", avg_avgget(n));	
+		fprintf(out, "%f\t# %s\n", avg_avgget(n), avg_comments[n]);	
 	}
 	fclose(out);
 }
