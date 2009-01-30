@@ -54,32 +54,6 @@ void update_slopeoffset()
 				-OffsetSlope*OFFSET_RESET_DELAY;
 }
 
-
-
-void output_data()
-{
-	double slopedoffset, current, particles;
-	int cancel_data;
-	FILE *out;
-	update_slopeoffset();
-	cancel_data = stored_data_at(N1);
-	slopedoffset = Offset0+OffsetSlope*(double)N1;
-	current = (double)curr_in_buff[N1]- cancel_data - slopedoffset;
-	particles = current/(double)freq_in_buff[N1];
-	out = fopen("dspout.txt", "w");
-	fprintf(out, "%f\n", current);
-	fprintf(out, "%f\n", particles);
-
-	cancel_data = stored_data_at(N2);
-	slopedoffset = Offset0+OffsetSlope*(double)N2;
-	current = (double)curr_in_buff[N2]- cancel_data - slopedoffset;
-	particles = current/(double)freq_in_buff[N2];
-	fprintf(out, "%f\n", current);
-	fprintf(out, "%f\n", particles);
-
-	fclose(out);
-}
-
 void process_avg()
 {
 	double slopedoffset, current, particles;
@@ -147,12 +121,6 @@ interrupt void c_int_ad_done()
 		}
 		buffed_curr_in = curr_in;
 		buffed_freq_in = freq_in;
-	/*} else if (N_AD == MAX_N_AD) {
-		output_data();
-		buffed_curr_in = curr_in;
-		buffed_freq_in = freq_in;
-		sbox_DaPut(CURR_DELAY_DA_CH, 0);
-		return;*/
 	} else {		
 		buffed_curr_in = curr_in;
 		buffed_freq_in = freq_in;

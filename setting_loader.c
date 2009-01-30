@@ -33,12 +33,19 @@ void load_settings()
 		fprintf(stderr, "Can't open %s\n", settingsfile);
 		exit(1);
 	}
+	/* CURRENT_FACTOR */
 	fgets(buff, BUFFSIZE, in);
 	CURRENT_FACTOR = atof(buff);
+
+	/* CHARGE_FACTOR */
 	fgets(buff, BUFFSIZE, in);
 	CHARGE_FACTOR = atof(buff);
+	
+	/* HARMONICS */
 	fgets(buff, BUFFSIZE, in);
 	HARMONICS = atoi(buff);
+
+	/* */
 	fgets(buff, BUFFSIZE, in);
 	T1 = atof(buff);
 	fgets(buff, BUFFSIZE, in);
