@@ -290,7 +290,7 @@ void main()
 			case di_average:
 				switch (AverageStatus) {
 					case none:
-						avg_initialize(5,10);
+						avg_initialize(7,10);
 						AverageStatus = start_avg;
 						break;
 					case end_avg:

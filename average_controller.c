@@ -6,9 +6,11 @@ static double **avg_buffer = NULL;
 static int *buffer_ind = NULL;
 static int N_AVG = 0;
 static int N_CYCLE = 0;
-static char *avg_comments[5] = {"current at timming 1",
+static char *avg_comments[7] = {"current at timming 1",
+								"charge at timming 1",
 								"particles at timming 1",
 								"current at timming 2",
+								"charge at timming 2",
 								"particles at timming 2",
 								"BS Counts"};
 	
