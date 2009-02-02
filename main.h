@@ -48,6 +48,8 @@ enum store_status {
 #define WORKTIME 1.85
 #define MAX_N_AD 9250 // must be SAMPLE_FREQ*WORKTIME
 
+#define ECHARGE 1.60217646e-10 // [nC] 
+
 /* customize behaivor */
 #define USE_FIELD_CANCEL 1
 #define FILE_ACCESS 0

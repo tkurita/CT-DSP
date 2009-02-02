@@ -56,27 +56,31 @@ void update_slopeoffset()
 
 void process_avg()
 {
-	double slopedoffset, current, particles;
+	double slopedoffset, current, charge, particles;
 	int cancel_data, bscnt;
 	update_slopeoffset();
 	cancel_data = stored_data_at(N1);
 	slopedoffset = Offset0+OffsetSlope*(double)N1;
 	current = (double)curr_in_buff[N1]- cancel_data - slopedoffset;
-	particles = current/(double)freq_in_buff[N1];
-	avg_add(0, current);
-	avg_add(1, particles);
+	charge = CHARGE_FACTOR*current/(double)freq_in_buff[N1];
+	particles = charge/charge/ECHARGE;
+	avg_add(0, CURRENT_FACTOR*current);
+	avg_add(1, charge);
+	avg_add(2, particles);
 
 	cancel_data = stored_data_at(N2);
 	slopedoffset = Offset0+OffsetSlope*(double)N2;
 	current = (double)curr_in_buff[N2]- cancel_data - slopedoffset;
-	particles = current/(double)freq_in_buff[N2];
-	avg_add(2, current);
-	if (avg_add(3, particles) == full) {
+	charge = CHARGE_FACTOR*current/(double)freq_in_buff[N2]/HARMONICS;
+	particles = charge/(CHARGE*ECHARGE);
+	avg_add(3, current);
+	avg_add(4, charge);
+	if (avg_add(5, particles) == full) {
 		AverageStatus = end_avg;
 	}
 
 	bscnt = sbox_CntGet(BS_CH);
-	avg_add(4, bscnt);
+	avg_add(6, bscnt);
 }
 
 interrupt void c_int_ad_done()
@@ -100,13 +104,11 @@ interrupt void c_int_ad_done()
 	}
 		
 	current = curr_f - cancel_data - CurrOffset;
-	particles = CALIB_RATIO*current/(double)freq_in;
+	particles = PARTICLES_OUT_FACTOR*current/(double)freq_in;
 
-	sbox_DaPut(CURR_DA_CH,(int)current);
-	//sbox_DaPut(CURR_DA_CH, 0);
+	sbox_DaPut(CURR_DA_CH,(int)(CURRENT_OUT_FACTOR*current));
 	sbox_DaPut(CANCEL_DA_CH, cancel_data);
 	sbox_DaPut(PARTC_DA_CH, (int)particles);
-	//sbox_DaPut(PARTC_DA_CH, (int)current_filterd);
 	sbox_DaPut(THROUGH_DA_CH, curr_in);
 
 	/* process for delayed output */
