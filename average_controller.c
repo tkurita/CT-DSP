@@ -15,7 +15,15 @@ static char *avg_comments[7] = {"current at timming 1",
 								"charge at timming 2",
 								"particles at timming 2",
 								"BS Counts"};
-	
+
+static char *outformat[7] = {"%f\t# %s\n",
+							 "%f\t# %s\n",
+							 "%f\t# %s\n",
+							 "%f\t# %s\n",
+							 "%f\t# %s\n",
+							 "%f\t# %s\n",
+							 "%f\t# %s\n"};
+
 int avg_initialize(short n_avg, int n_cycle) {
 	int n = 0;
 	int m = 0;
@@ -100,7 +108,7 @@ void avg_output() {
 		printf("%s\n", avg_comments[n]);
 		printf("%f\n", avg_result);
 #endif
-		fprintf(out, "%f\t# %s\n", avg_result, avg_comments[n]);	
+		fprintf(out, outformat[n], avg_result, avg_comments[n]);	
 	}
 	fclose(out);
 }
