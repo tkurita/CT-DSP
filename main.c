@@ -1,5 +1,4 @@
 #include "main.h"
-//static far volatile int data[MAX_N_AD]; //magnetic field signal. subtracted from current signal
 #include "leak_field.h"
 #include "DO_controller.h"
 #include "setting_loader.h"
@@ -7,13 +6,9 @@
 
 /*define global variables*/
 
-//static volatile int Triggered; //set to 1 if triggered.
+
 volatile int N_AD; //incremented with AD_DONE interruput. rest to 0 when OUT_TRIG intterupt
-/*
-static volatile int ShouldStoreData; //when button is pushed, this flag raise
-static volatile int InStoreMode;
-static volatile int ShouldClearData;
-*/
+
 static int NextTask;
 static volatile enum avg_status AverageStatus;
 static volatile enum store_status StoreStatus;
@@ -62,8 +57,8 @@ void process_avg()
 	cancel_data = stored_data_at(N1);
 	slopedoffset = Offset0+OffsetSlope*(double)N1;
 	current = (double)curr_in_buff[N1]- cancel_data - slopedoffset;
-	charge = CHARGE_FACTOR*current/(double)freq_in_buff[N1];
-	particles = charge/charge/ECHARGE;
+	charge = CHARGE_FACTOR*current/(double)freq_in_buff[N1]/HARMONICS;
+	particles = charge/(CHARGE*ECHARGE);
 	avg_add(0, CURRENT_FACTOR*current);
 	avg_add(1, charge);
 	avg_add(2, particles);
@@ -144,6 +139,8 @@ intterupt functoin for trigger in running
 --------------------------*/
 interrupt void c_int_triggered()
 {
+	// int bscnt = sbox_CntGet(BS_CH);
+	// printf("count %d\n", bscnt);
 	DO_on_for_ch(do_trigger);
 	sbox_CntPut(BS_CH, 0 );
 	N_AD = 0;
