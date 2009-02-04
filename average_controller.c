@@ -24,16 +24,8 @@ static char *outformat[7] = {"%f\t# %s\n",
 							 "%f\t# %s\n",
 							 "%f\t# %s\n"};
 
-int avg_initialize(short n_avg, int n_cycle) {
-	int n = 0;
-	int m = 0;
-	if (avg_buffer != NULL) {
-		for (n=0; n < N_CYCLE; n++) {
-			free(avg_buffer[n]);
-		}
-		free(avg_buffer);
-		free(buffer_ind);	
-	}
+void alloc_buffers(short n_avg, int n_cycle) {
+	unsigned short n;
 	avg_buffer = (double **)malloc(n_avg*sizeof(double*));
 	if (avg_buffer == NULL) {
 		fprintf(stderr, "Fail to malloc avg_buffer\n");
@@ -46,10 +38,6 @@ int avg_initialize(short n_avg, int n_cycle) {
 			fprintf(stderr, "Fail to malloc avg_buffer[%d]\n",n);
 			exit(-1);
 		}
-
-		for (m = 0; m<n_cycle; m++) {
-			avg_buffer[n][m] = 0;
-		}
 	}
 
 	buffer_ind = (int *)malloc(sizeof(int)*n_avg);
@@ -57,12 +45,39 @@ int avg_initialize(short n_avg, int n_cycle) {
 		fprintf(stderr, "Fail to malloc buffer_ind\n");
 		exit(-1);
 	}
-	for (n = 0; n < n_avg; n++) {
+}
+
+void init_buffers() {
+	short m,n;
+	for (n = 0; n < N_AVG; n++ ){
+		for (m = 0; m < N_CYCLE; m++) {
+			avg_buffer[n][m] = 0;
+		}
+	}
+
+	for (n = 0; n < N_AVG; n++) {
 		buffer_ind[n] = 0;
+	}
+}
+
+int avg_initialize(short n_avg, int n_cycle) {
+	unsigned short n = 0;
+	if (avg_buffer != NULL) {
+		if ((n_avg !=  N_AVG)||(n_cycle != N_CYCLE)) {
+			for (n=0; n < N_CYCLE; n++) {
+				free(avg_buffer[n]);
+			}
+			free(avg_buffer);
+			free(buffer_ind);
+			alloc_buffers(n_avg, n_cycle);
+		}
+	} else {
+		alloc_buffers(n_avg, n_cycle);
 	}
 
 	N_AVG = n_avg;
 	N_CYCLE = n_cycle;
+	init_buffers();
 	return(1);
 }
 

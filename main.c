@@ -308,7 +308,7 @@ void main()
 				if ((StoreStatus == end_store)||(StoreStatus == in_store))  {
 					check_di();
 				}
-
+				break;
 		}
 	}
 }
