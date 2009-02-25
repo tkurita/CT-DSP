@@ -53,11 +53,11 @@ void process_avg()
 {
 	double slopedoffset, current, charge, particles;
 	int cancel_data, bscnt;
-	update_slopeoffset();
+	//update_slopeoffset();
 	cancel_data = stored_data_at(N1);
 	slopedoffset = Offset0+OffsetSlope*(double)N1;
 	current = (double)curr_in_buff[N1]- cancel_data - slopedoffset;
-	charge = CHARGE_FACTOR*current/(double)freq_in_buff[N1]/HARMONICS;
+	charge = CHARGE_FACTOR*current/((double)freq_in_buff[N1]/HARMONICS);
 	particles = charge/(CHARGE*ECHARGE);
 	avg_add(0, CURRENT_FACTOR*current);
 	avg_add(1, charge);
@@ -66,9 +66,9 @@ void process_avg()
 	cancel_data = stored_data_at(N2);
 	slopedoffset = Offset0+OffsetSlope*(double)N2;
 	current = (double)curr_in_buff[N2]- cancel_data - slopedoffset;
-	charge = CHARGE_FACTOR*current/(double)freq_in_buff[N2]/HARMONICS;
+	charge = CHARGE_FACTOR*current/((double)freq_in_buff[N2]/HARMONICS);
 	particles = charge/(CHARGE*ECHARGE);
-	avg_add(3, current);
+	avg_add(3, CURRENT_FACTOR*current);
 	avg_add(4, charge);
 	if (avg_add(5, particles) == full) {
 		AverageStatus = end_avg;
@@ -113,6 +113,7 @@ interrupt void c_int_ad_done()
 		curr_in_buff[N_AD] = curr_in;
 		freq_in_buff[N_AD] = freq_in;
 	} else if (N_AD == MAX_N_AD) {
+		update_slopeoffset();
 		if (AverageStatus == start_avg) {
 			process_avg();
 		}
@@ -126,7 +127,7 @@ interrupt void c_int_ad_done()
 	slopedoffset = Offset0+OffsetSlope*(double)N_AD;
 	current = (double)buffed_curr_in
 						- cancel_data - slopedoffset;
-	particles = CALIB_RATIO*current/(double)buffed_freq_in;
+	particles = PARTICLES_OUT_FACTOR*current/(double)buffed_freq_in;
 	
 	sbox_DaPut(CURR_DELAY_DA_CH, (int)current);
 	sbox_DaPut(PARTC_DELAY_DA_CH, (int)particles);
@@ -155,9 +156,10 @@ interrupt void c_int_triggered()
 		ready_to_store();
 	}
 	
-	if (StoreStatus == in_store) {
+	if ((StoreStatus == in_store)||(StoreStatus == should_clear)) {
 		//puts("store mode");
 		if ((StoreStatus == should_clear) || (triggered_to_store())) {
+			//puts("will end storing");
 			sbox_IntUnSet(EINT5);
 			if( sbox_IntSet( AD_DONE, EINT5, c_int_ad_done ) != SBOX_OK ) {
 				puts("[sbox_IntSet] error for c_int_ad_done\n");
@@ -165,6 +167,7 @@ interrupt void c_int_triggered()
 			}
 
 			if (StoreStatus == should_clear) {
+				//puts("will clear");
 				clear_stored_data();
 				DO_off_for_ch(do_recordleakfield);
 			}
@@ -205,7 +208,10 @@ void check_di()
 	//if (di_in) printf("di_in %d\n", di_in);
 
 	if (StoreStatus == in_store) {
-		if (di_in & di_recordleakfield) StoreStatus = should_clear;
+		if (di_in & di_recordleakfield) {
+			StoreStatus = should_clear;
+			//puts("clear button pressed");
+		}
 	} else {
 		if (NextTask = di_in & di_readsetting){}
 		else if (NextTask = di_in & di_recordleakfield){}

@@ -66,7 +66,7 @@ void output_stored_data()
 	
 	first_val = StoredData[OFFSET_RESET_DELAY];
 	last_val = StoredData[MAX_N_AD-1];
-	slope = (double)(last_val-first_val)/((double)MAX_N_AD);
+	slope = (double)(last_val-first_val)/((double)(MAX_N_AD-OFFSET_RESET_DELAY));
 	for (i=0; i<MAX_N_AD; i++) {
 		//fprintf(fp, "%d %d %d\n", i, data[i]/N_CYCLE, (int)((data[i]- slope*i - first_val)/N_CYCLE));
 		StoredData[i] = (int)((StoredData[i]- slope*i - first_val)/MAX_CYCLE);
@@ -94,7 +94,6 @@ int triggered_to_store()
 {
 	int is_end_store;
 	CurrentCycle ++;
-	N_AD = 0;
 	is_end_store = (CurrentCycle > MAX_CYCLE);
 	if (is_end_store) {
 		output_stored_data();
@@ -109,7 +108,6 @@ void ready_to_store()
 	//puts("ready to store");
 	CurrentCycle = 0;
 	DO_on_for_ch(do_recordleakfield);
-	triggered_to_store();
 }
 
 interrupt void c_int_ad_done_to_store() 

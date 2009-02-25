@@ -16,13 +16,18 @@ double CHARGE_FACTOR;
 int CHARGE;
 unsigned int HARMONICS;
 
+#define useLog 1
+
 void show_settings()
 {
-	printf("CURRENT_OUT_FACTOR : %f\n", CURRENT_FACTOR);
-	printf("CHARGE_OUT_FACTOR : %f\n", CHARGE_FACTOR);
-	printf("HARMONICS : %d\n", HARMONICS);
+	printf("CURRENT_OUT_FACTOR : %f\n", CURRENT_OUT_FACTOR);
+	printf("PARTICLES_OUT_FACTOR : %f\n", PARTICLES_OUT_FACTOR);
 	printf("Timming 1 : %f\n", T1);
 	printf("Timming 2 : %f\n", T2);
+	printf("CURRENT_FACTOR : %f\n", CURRENT_FACTOR);
+	printf("CHARGE_FACTOR : %f\n", CHARGE_FACTOR);
+	printf("CHARGE : %d\n", CHARGE);
+	printf("HARMONICS : %d\n", HARMONICS);
 }
 
 void load_settings()
@@ -56,7 +61,7 @@ void load_settings()
 
 	/* CHARGE_FACTOR */
 	fgets(buff, BUFFSIZE, in);
-	CURRENT_FACTOR = atof(buff);
+	CHARGE_FACTOR = atof(buff);
 
 	/* CHARGE */
 	fgets(buff, BUFFSIZE, in);
@@ -69,5 +74,8 @@ void load_settings()
 	fclose(in);
 	N1 = T1*SAMPLE_FREQ/1000;
 	N2 = T2*SAMPLE_FREQ/1000;
-	//show_settings();
+
+#if useLog
+	show_settings();
+#endif
 }
