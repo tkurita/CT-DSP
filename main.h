@@ -44,10 +44,33 @@ enum store_status {
 	should_clear
 };
 
-#define SAMPLE_FREQ 5000.0 //[Hz] sampling frequency of ADDA
 #define WORKTIME 1.85
-#define MAX_N_AD 9250 // must be SAMPLE_FREQ*WORKTIME
 
+/* // 5kHz
+#define SAMPLE_FREQ 5000.0 //[Hz] sampling frequency of ADDA
+#define MAX_N_AD 9250 // must be SAMPLE_FREQ*WORKTIME
+#define OFFSET_RESET_DELAY 1 //[sample]
+*/
+/* // 20kHz
+#define SAMPLE_FREQ 20000.0 //[Hz] sampling frequency of ADDA
+#define MAX_N_AD 37000 // must be SAMPLE_FREQ*WORKTIME
+#define OFFSET_RESET_DELAY 2 //[sample]
+*/
+/* // 30kHz
+#define SAMPLE_FREQ 30000.0 //[Hz] sampling frequency of ADDA
+#define MAX_N_AD 55500 // must be SAMPLE_FREQ*WORKTIME
+#define OFFSET_RESET_DELAY 3 //[sample]
+*/
+// 50kHz
+#define SAMPLE_FREQ 50000.0 //[Hz] sampling frequency of ADDA
+#define MAX_N_AD 92500 // must be SAMPLE_FREQ*WORKTIME
+#define OFFSET_RESET_DELAY 5 //[sample] <= 6 for frontend module's test pulse
+/*
+// 100kHz
+#define SAMPLE_FREQ 100000.0 //[Hz] sampling frequency of ADDA
+#define MAX_N_AD 185000 // must be SAMPLE_FREQ*WORKTIME
+#define OFFSET_RESET_DELAY 10 //[sample]
+*/
 #define ECHARGE 1.60217646e-10 // [nC] 
 
 /* customize behaivor */
@@ -60,4 +83,4 @@ enum store_status {
 #define CALIB_RATIO_PROTON 10000*1.20455 //proton 2007.0907
 #define CALIB_RATIO_CARBON 100000.0*1.20455*2 //carbon
 #define CALIB_RARIO_CARBON2 100000.0*1.20455*4 // carbon 2008.04.04 current out of front module decrease to the half.
-#define OFFSET_RESET_DELAY 10 //[sample]
+

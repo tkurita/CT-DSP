@@ -131,7 +131,7 @@ interrupt void c_int_ad_done()
 	
 	sbox_DaPut(CURR_DELAY_DA_CH, (int)current);
 	sbox_DaPut(PARTC_DELAY_DA_CH, (int)particles);
-	
+	sbox_DaTrgSet( TRG_SOFT );
 	N_AD++;
 } 
 
@@ -184,6 +184,7 @@ this function is called by EINT4. EINT4 will be remapped to c_int_triggered.
 interrupt void c_int_start_ad_da()
 {
 	//puts("will start ad_da");
+	clock_stop(TIMER_0);
 	DO_on_for_ch(do_trigger);
 	sbox_IntUnSet(EINT4);
 	if( sbox_IntSet( OUT_TRG, EINT4, c_int_triggered ) != SBOX_OK ) {
@@ -196,8 +197,9 @@ interrupt void c_int_start_ad_da()
 		exit( -1 );
 	}
 	
-	clock_start(TIMER_0);
+
 	N_AD = 0;
+	clock_once_start(SAMPLE_FREQ, TIMER_0);
 }
 
 void check_di()
@@ -250,11 +252,16 @@ void main()
 	
 	/* DA setup */
 	sbox_DaCtrl( ON );
+	if( sbox_DaTrgSet( SBOX_DISABLE ) != SBOX_OK ) {
+		puts("[sbox_DaTrgSet] error \n");
+		exit( -1 );
+	}
+	/*
 	if( sbox_DaTrgSet( TRG_TIMER0 ) != SBOX_OK ) {
 		puts("[sbox_DaTrgSet] error \n");
 		exit( -1 );
 	}
-	
+	*/
 	/* Timer0 setup */
 	clock_set(SAMPLE_FREQ, TIMER_0 );
 	clock_stop(TIMER_0);
@@ -271,7 +278,7 @@ void main()
 		exit( -1 );
 	}
 
-	clock_set( 1000.0, TIMER_1 );
+	clock_set(20000.0, TIMER_1 );
 
 ///////////// Set Trigger Mode ////////////////
 	//setup interrupt

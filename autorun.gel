@@ -52,10 +52,11 @@ OnTargetConnect()
     }
     *(char *)CPLD_STAT = 0;
 	
-	GEL_Load("d:\\CT-DSP\\trunk\\Debug\\CT-DSP.out");
+	GEL_Load("C:\\SlowCTController\\CT-DSP\\Debug\\CT-DSP.out");
 }
 
-OnFileLoaded(int nErrorCode, int bSymbolsOnly){
+OnFileLoaded(int nErrorCode, int bSymbolsOnly)
+{
 	if (nErrorCode)
 		GEL_TextOut("An error occurred while loading a file. -%d-\n",,,,, ErrorCode);
 	else

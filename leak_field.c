@@ -120,6 +120,7 @@ interrupt void c_int_ad_done_to_store()
 	x = sbox_AdGet(CURR_CH);
 	StoredData[N_AD]+=x;
 	sbox_DaPut(CURR_DA_CH, StoredData[N_AD]/CurrentCycle);
+	sbox_DaTrgSet( TRG_SOFT );
 	N_AD++;
 }
 
