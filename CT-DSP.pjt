@@ -19,7 +19,7 @@ Source="DO_controller.c"
 Source="leak_field.c"
 Source="main.c"
 Source="setting_loader.c"
-Source="C:\sBOX\lib\iramboot.cmd"
+Source="isramboot.cmd"
 
 ["Compiler" Settings: "Debug"]
 Options=-g -q -fr"C:\SlowCTController\CT-DSP-TEST\Debug" -i"C:\sBox\h" -d"_DEBUG" -mv6700
@@ -51,12 +51,18 @@ Options=-q -c -m".\Release\CT-DSP.map" -o".\Release\CT-DSP.out" -x
 ["C:\sBOX\lib\sboxdev.LIB" Settings: "Debug"]
 LinkOrder=2
 
-["C:\sBOX\lib\iramboot.cmd" Settings: "Debug"]
+["C:\sBOX\lib\sboxdev.LIB" Settings: "hex"]
+LinkOrder=2
+
+["C:\sBOX\lib\sboxdev.LIB" Settings: "Release"]
+LinkOrder=2
+
+["isramboot.cmd" Settings: "Debug"]
 LinkOrder=1
 
-["C:\sBOX\lib\iramboot.cmd" Settings: "hex"]
+["isramboot.cmd" Settings: "hex"]
 LinkOrder=1
 
-["C:\sBOX\lib\iramboot.cmd" Settings: "Release"]
+["isramboot.cmd" Settings: "Release"]
 LinkOrder=1
 
