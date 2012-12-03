@@ -1,4 +1,4 @@
-#define settingsfile "settings.txt"
+#define settingsfile "../../settings.txt"
 
 extern double CURRENT_OUT_FACTOR;
 extern double PARTICLES_OUT_FACTOR;

@@ -1,7 +1,7 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir="C:\SlowCTController\CT-DSP-TEST\"
+ProjectDir="C:\SlowCTController\CT-DSP\"
 ProjectType=Executable
 CPUFamily=TMS320C67XX
 Tool="Compiler"
@@ -22,13 +22,13 @@ Source="setting_loader.c"
 Source="isramboot.cmd"
 
 ["Compiler" Settings: "Debug"]
-Options=-g -q -fr"C:\SlowCTController\CT-DSP-TEST\Debug" -i"C:\sBox\h" -d"_DEBUG" -mv6700
+Options=-g -q -fr"C:\SlowCTController\CT-DSP\Debug" -i"C:\sBox\h" -d"_DEBUG" -mv6700
 
 ["Compiler" Settings: "hex"]
-Options=-q -o2 -eo.o67 -fr"C:\SlowCTController\CT-DSP-TEST\hex" -i"C:\sBOX\h" -mv6710
+Options=-q -o2 -eo.o67 -fr"C:\SlowCTController\CT-DSP\hex" -i"C:\sBOX\h" -mv6710
 
 ["Compiler" Settings: "Release"]
-Options=-q -o3 -fr"C:\SlowCTController\CT-DSP-TEST\Release" -mv6700
+Options=-q -o3 -fr"C:\SlowCTController\CT-DSP\Release" -mv6700
 
 ["DspBiosBuilder" Settings: "Debug"]
 Options=-v6x

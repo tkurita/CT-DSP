@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #define useLog 0
+#define dspout_file "../../dspout.txt"
 
 static double **avg_buffer = NULL;
 static int *buffer_ind = NULL;
@@ -116,7 +117,7 @@ void avg_output() {
 	int n;
 	FILE *out;
 	double avg_result;
-	out = fopen("dspout.txt", "w");
+	out = fopen(dspout_file, "w");
 	for (n=0; n < N_AVG; n++) {
 		avg_result = avg_avgget(n);
 #if useLog
