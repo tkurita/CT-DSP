@@ -72,6 +72,10 @@ void load_settings()
 	fgets(buff, BUFFSIZE, in);
 	HARMONICS = atoi(buff);
 
+	/* filename */
+	fgets(buff, BUFFSIZE, in);
+	printf("%s", buff);
+
 	fclose(in);
 	N1 = T1*SAMPLE_FREQ/1000;
 	N2 = T2*SAMPLE_FREQ/1000;
