@@ -129,7 +129,7 @@ interrupt void c_int_ad_done()
 						- cancel_data - slopedoffset;
 	particles = PARTICLES_OUT_FACTOR*current/(double)buffed_freq_in;
 	
-	sbox_DaPut(CURR_DELAY_DA_CH, (int)current);
+	sbox_DaPut(CURR_DELAY_DA_CH, (int)(CURRENT_OUT_FACTOR*current));
 	sbox_DaPut(PARTC_DELAY_DA_CH, (int)particles);
 	sbox_DaTrgSet( TRG_SOFT );
 	N_AD++;
