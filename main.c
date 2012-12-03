@@ -231,7 +231,7 @@ void check_di()
 void main()
 {		
 	load_settings();
-	fprintf( stdout, "start CT-DSP\n");
+	puts("----- Initializing CT-DSP -----");
 	fflush( stdout );
 
 	/* system initialize */
@@ -287,6 +287,7 @@ void main()
 		exit( -1 );
 	}
 
+	puts("----- Started CT-DSP -----");
 	while(1) {
 		switch (NextTask) {
 			case di_readsetting:
@@ -295,6 +296,7 @@ void main()
 					load_settings();
 					DO_off_for_ch(do_readsetting);
 					NextTask = -1;
+					puts("----- Restarted CT-DSP -----");
 				}
 				break;
 			case di_average:

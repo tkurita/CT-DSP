@@ -34,6 +34,7 @@ void load_settings()
 {
 	char buff[BUFFSIZE];
 	FILE *in;
+	puts("----- Reading settings... -----");
 	in = fopen(settingsfile, "r");
 	if (!in) {
 		fprintf(stderr, "Can't open %s\n", settingsfile);
