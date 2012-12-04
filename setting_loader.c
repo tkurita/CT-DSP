@@ -5,21 +5,23 @@
 
 #define BUFFSIZE 1024
 
-double CURRENT_OUT_FACTOR;
-double PARTICLES_OUT_FACTOR;
-double T1;
-double T2;
+double CURRENT_OUT_FACTOR = 1.0;
+double PARTICLES_OUT_FACTOR = 6740.0;
+double T1 = 32.0;
+double T2 = 588.0;
 unsigned int N1;
 unsigned int N2;
-double CURRENT_FACTOR;
-double CHARGE_FACTOR;
-int CHARGE;
-unsigned int HARMONICS;
+double CURRENT_FACTOR = 0.008690;
+double CHARGE_FACTOR = 45.175;
+int CHARGE = 1;
+unsigned int HARMONICS = 1;
 
-#define useLog 1
+#define useLog 0
 
 void show_settings()
 {
+#ifdef FLASHBOOT
+#else
 	printf("CURRENT_OUT_FACTOR : %f\n", CURRENT_OUT_FACTOR);
 	printf("PARTICLES_OUT_FACTOR : %f\n", PARTICLES_OUT_FACTOR);
 	printf("Timming 1 : %f\n", T1);
@@ -28,10 +30,13 @@ void show_settings()
 	printf("CHARGE_FACTOR : %f\n", CHARGE_FACTOR);
 	printf("CHARGE : %d\n", CHARGE);
 	printf("HARMONICS : %d\n", HARMONICS);
+#endif
 }
 
 void load_settings()
 {
+#ifdef FLASHBOOT
+#else
 	char buff[BUFFSIZE];
 	FILE *in;
 	puts("----- Reading settings... -----");
@@ -77,10 +82,9 @@ void load_settings()
 	printf("%s", buff);
 
 	fclose(in);
+	show_settings();
+#endif
 	N1 = T1*SAMPLE_FREQ/1000;
 	N2 = T2*SAMPLE_FREQ/1000;
 
-#if useLog
-	show_settings();
-#endif
 }
