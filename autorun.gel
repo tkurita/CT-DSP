@@ -52,7 +52,7 @@ OnTargetConnect()
     }
     *(char *)CPLD_STAT = 0;
 	
-	GEL_Load("C:\\SlowCTController\\CT-DSP\\Debug\\CT-DSP.out");
+	GEL_Load("C:\\SlowCTController\\CT-DSP\\Release\\CT-DSP.out");
 }
 
 OnFileLoaded(int nErrorCode, int bSymbolsOnly)
