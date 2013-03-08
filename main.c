@@ -170,9 +170,11 @@ interrupt void c_int_triggered()
 				//puts("will clear");
 				clear_stored_data();
 				DO_off_for_ch(do_recordleakfield);
-			}
-			
-			StoreStatus = end_store;
+                StoreStatus = clearing_store;
+			} else {
+            StoreStatus = end_store;
+            }
+                //            StoreStatus = end_store;
 		}
 	} 
 }
@@ -208,7 +210,29 @@ void check_di()
 	di_in = sbox_DiGet() & 0xFF;
 	//puts("start check_di");
 	//if (di_in) printf("di_in %d\n", di_in);
+    switch (StoreStatus) {
+        case in_store:
+            if (di_in & di_recordleakfield) {
+                StoreStatus = should_clear;
+                //puts("clear button pressed");
+            }
+            break;
+        case clearing_store:
+            if (~di_in & di_recordleakfield) {
+                // recordleakfiled button is released.
+                StoreStatus = end_store;
+            }
+        default:
+            if (NextTask = di_in & di_readsetting){}
+            else if (NextTask = di_in & di_recordleakfield){}
+            else if (NextTask = di_in & di_average){}
+            if (NextTask) {
+                //printf("NextTask %d\n", NextTask);
+                DO_on_with_bits(NextTask);
+            }
 
+    }
+            /*        
 	if (StoreStatus == in_store) {
 		if (di_in & di_recordleakfield) {
 			StoreStatus = should_clear;
@@ -223,6 +247,7 @@ void check_di()
 			DO_on_with_bits(NextTask);
 		}
 	}
+            */
 }
 
 /*-------------------------------------------------------

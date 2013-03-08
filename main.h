@@ -41,7 +41,8 @@ enum store_status {
 	end_store,
 	should_store,
 	in_store,
-	should_clear
+	should_clear,
+    clearing_store
 };
 
 #define WORKTIME 1.85
