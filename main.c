@@ -257,6 +257,9 @@ void check_di()
 -------------------------------------------------------*/
 void main()
 {		
+    puts("----- Stating CT-DSP -----");
+    printf("Sampling Frequency : %f [Hz]\n", SAMPLE_FREQ);
+    load_primitive_settings();
 	load_settings();
 	puts("----- Initializing CT-DSP -----");
 	fflush( stdout );
@@ -314,14 +317,15 @@ void main()
 		exit( -1 );
 	}
 
-	puts("----- Started CT-DSP -----");
+	puts("----- CT-DSP Started -----");
 	while(1) {
 		switch (NextTask) {
 			case di_readsetting:
 				if (N_AD == MAX_N_AD) {
 					N_AD++;
 					load_settings();
-					DO_off_for_ch(do_readsetting);
+					load_primitive_settings();
+                    DO_off_for_ch(do_readsetting);
 					NextTask = -1;
 					puts("----- Restarted CT-DSP -----");
 				}

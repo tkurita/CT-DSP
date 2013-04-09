@@ -1,4 +1,5 @@
 #define settingsfile "../../settings.txt"
+#define PRIMITIVE_SETTINGS_FILE "../../primitive-settings.txt"
 
 extern double CURRENT_OUT_FACTOR;
 extern double PARTICLES_OUT_FACTOR;
@@ -12,3 +13,4 @@ extern int CHARGE;
 extern unsigned int HARMONICS;
 
 void load_settings();
+void load_primitive_settings();

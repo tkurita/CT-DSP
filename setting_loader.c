@@ -16,7 +16,29 @@ double CHARGE_FACTOR = 45.175;
 int CHARGE = 1;
 unsigned int HARMONICS = 1;
 
+extern int OFFSET_RESET_DELAY;
+
 #define useLog 0
+
+void load_primitive_settings()
+{
+#ifdef FLASHBOOT
+#else
+    char buff[BUFFSIZE];
+    FILE *in;
+    in = fopen(PRIMITIVE_SETTINGS_FILE, "r");
+    if (!in) {
+        goto bail;
+    }
+   
+    while (fgets(buff, BUFFSIZE, in) ) {
+        OFFSET_RESET_DELAY = atoi(buff);
+        if (OFFSET_RESET_DELAY) break;
+    }
+ bail:
+    printf("OFFSET_RESET_DELAY : %d [cycle]\n", OFFSET_RESET_DELAY);
+#endif
+}
 
 void show_settings()
 {
