@@ -6,6 +6,7 @@
 
 /*define global variables*/
 
+int OFFSET_RESET_DELAY = DEFAULT_OFFSET_RESET_DELAY;
 
 volatile int N_AD; //incremented with AD_DONE interruput. rest to 0 when OUT_TRIG intterupt
 

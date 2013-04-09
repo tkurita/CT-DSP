@@ -11,6 +11,7 @@ static far volatile int StoredData[MAX_N_AD]; //magnetic field signal. subtracte
 
 static volatile int CurrentCycle;
 extern volatile int N_AD;
+extern int OFFSET_RESET_DELAY;
  
 void read_cancel_data()
 {

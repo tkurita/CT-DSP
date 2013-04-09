@@ -55,23 +55,23 @@ enum store_status {
 #if 5 == SMPLINGKHZ // 5kHz
 	#define SAMPLE_FREQ 5000.0 //[Hz] sampling frequency of ADDA
 	#define MAX_N_AD 9250 // must be SAMPLE_FREQ*WORKTIME
-	#define OFFSET_RESET_DELAY 1 //[sample]
+	#define DEFALUT_OFFSET_RESET_DELAY 1 //[sample]
 #elif 20 == SAMPLING_KHZ // 20kHz
 	#define SAMPLE_FREQ 20000.0 //[Hz] sampling frequency of ADDA
 	#define MAX_N_AD 37000 // must be SAMPLE_FREQ*WORKTIME
-	#define OFFSET_RESET_DELAY 2 //[sample]
+	#define DEFAULT_OFFSET_RESET_DELAY 2 //[sample]
 #elif 30 == SAMLING_KHZ // 30kHz
 	#define SAMPLE_FREQ 30000.0 //[Hz] sampling frequency of ADDA
 	#define MAX_N_AD 55500 // must be SAMPLE_FREQ*WORKTIME
-	#define OFFSET_RESET_DELAY 3 //[sample]
+	#define DEFAULT_OFFSET_RESET_DELAY 3 //[sample]
 #elif 50 == SAMPLING_KHZ // 50kHz
 	#define SAMPLE_FREQ 50000.0 //[Hz] sampling frequency of ADDA
 	#define MAX_N_AD 92500 // must be SAMPLE_FREQ*WORKTIME
-	#define OFFSET_RESET_DELAY 12 //[sample] <= 6 for frontend module's test pulse
+	#define DEFAULT_OFFSET_RESET_DELAY 12 //[sample] <= 6 for frontend module's test pulse
 #elif 100 == SAMPLING_KHZ // 100kHz
 	#define SAMPLE_FREQ 100000.0 //[Hz] sampling frequency of ADDA
 	#define MAX_N_AD 185000 // must be SAMPLE_FREQ*WORKTIME
-	#define OFFSET_RESET_DELAY 10 //[sample]
+	#define DEFAULT_OFFSET_RESET_DELAY 10 //[sample]
 #endif
 
 #define ECHARGE 1.60217646e-10 // [nC] 
