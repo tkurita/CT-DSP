@@ -105,6 +105,7 @@ interrupt void c_int_ad_done()
 	sbox_DaPut(CANCEL_DA_CH, cancel_data);
 	sbox_DaPut(PARTC_DA_CH, (int)particles);
 	sbox_DaPut(THROUGH_DA_CH, curr_in);
+	sbox_DaPut(DA_RESERVE_1, (int)CurrOffset);
 
 	/* process for delayed output */
 	if (N_AD < MAX_N_AD) {

@@ -14,6 +14,8 @@
 #define CANCEL_DA_CH 3 // output of field error
 #define CURR_DELAY_DA_CH 4 //delayed (linear pedestal cancel) current out
 #define PARTC_DELAY_DA_CH 5 //delayed (linear pedestal cancel) particle number out
+#define DA_RESERVE_1 6
+#define DA_RESERVE_2 7
 
 /* COUNTER CHANNEL */
 #define BS_CH 0
@@ -49,7 +51,7 @@ enum store_status {
 
 #define SAMPLING_KHZ 50
 
-// OFF_SET_DELAY required about 150usec
+// OFF_SET_DELAY required about 240usec
 #if 5 == SMPLINGKHZ // 5kHz
 	#define SAMPLE_FREQ 5000.0 //[Hz] sampling frequency of ADDA
 	#define MAX_N_AD 9250 // must be SAMPLE_FREQ*WORKTIME
@@ -65,7 +67,7 @@ enum store_status {
 #elif 50 == SAMPLING_KHZ // 50kHz
 	#define SAMPLE_FREQ 50000.0 //[Hz] sampling frequency of ADDA
 	#define MAX_N_AD 92500 // must be SAMPLE_FREQ*WORKTIME
-	#define OFFSET_RESET_DELAY 8 //[sample] <= 6 for frontend module's test pulse
+	#define OFFSET_RESET_DELAY 12 //[sample] <= 6 for frontend module's test pulse
 #elif 100 == SAMPLING_KHZ // 100kHz
 	#define SAMPLE_FREQ 100000.0 //[Hz] sampling frequency of ADDA
 	#define MAX_N_AD 185000 // must be SAMPLE_FREQ*WORKTIME
